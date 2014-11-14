@@ -7,10 +7,12 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-
-gem 'sqlite3'
+group :production do
+  gem 'pg'
+end
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'rspec-rails'
   gem 'rspec-mocks'
   gem 'shoulda-matchers'
