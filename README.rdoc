@@ -4,6 +4,7 @@
   git clone https://github.com/sriprasanna/hangman.git
   cd hangman
   bundle install
+  rake db:migrate db:seed
   rails s
 
 ====== To create a game
