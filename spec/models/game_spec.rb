@@ -18,15 +18,95 @@ RSpec.describe Game, :type => :model do
     end
   end
   
-  describe 'Current word status' do
-    before :each do
-      @word = Word.create! text: 'awesome'
-      @game = Game.create! word: @word, status: Game::STATUS[:BUSY]
+  describe 'Tries' do
+    it 'should have default number of tries' do
+      expect(Game.new.tries_left).to eq(11)
     end
+  end
+  
+  describe 'Actions' do
+    let(:word){
+      Word.create! text: 'awesome'
+    }
+    
+    let(:game){
+      Game.create! word: word, status: Game::STATUS[:BUSY]
+    }
 
-    it 'should have the current word as dots after creation' do
-      expect(@game.current_word_status).to eq('.' * @word.text.length)
+    describe 'Current word status' do
+      it 'should have the current word as dots after creation' do
+        expect(game.current_word_status).to eq(Game::DOT * word.text.length)
+      end
+    end
+    
+    describe 'Play' do
+      it 'should have the letters revealed when a correct guess is made' do
+        game.play 'e'
+        game.reload
+        game.play 'a'
+        game.reload
+        expect(game.current_word_status).to eq('a.e...e')
+        expect(game.tries_left).to eq(11)
+      end
+      
+      it 'should decrease the number of tries count if a guess is incorrect' do
+        game.play 'z'
+        game.reload
+        expect(game.current_word_status).to eq(Game::DOT * word.text.length)
+        expect(game.tries_left).to eq(10)
+      end
+      
+      it 'should decrease the number of tries count if a guess has more than one letter' do
+        game.play 'aw'
+        game.reload
+        expect(game.current_word_status).to eq(Game::DOT * word.text.length)
+        expect(game.tries_left).to eq(10)
+      end
+      
+      it 'should not change the state if the game is still on play' do
+        game.play 'e'
+        game.reload
+        expect(game.status).to eq(Game::STATUS[:BUSY])
+      end
+      
+      describe 'Decision' do
+        let(:word){
+          Word.create! text: 'a'
+        }
+
+        let(:game){
+          Game.create! word: word, status: Game::STATUS[:BUSY], tries_left: 1
+        }
+        
+        describe 'Success' do
+          it 'should mark a game success when all the letters are revealed before the number of tries run out' do
+            game.play 'a'
+            game.reload
+            expect(game.current_word_status).to eq('a')
+            expect(game.status).to eq(Game::STATUS[:SUCCESS])
+          end
+        end
+
+        describe 'Fail' do
+          it 'should mark a game fail when not all the letters are revealed before the number of tries ran out' do
+            game.play 'z'
+            game.reload
+            expect(game.current_word_status).to eq(Game::DOT)
+            expect(game.status).to eq(Game::STATUS[:FAIL])
+          end
+        end
+        
+        it 'should not let you play the game if the status is not busy' do
+          game.status = Game::STATUS[:FAIL]
+          game.save!
+          game.play 'a'
+          expect(game.status).to eq(Game::STATUS[:FAIL])
+          expect(game.tries_left).to eq(1)
+        end
+      end
+    
     end
     
   end
+
 end
