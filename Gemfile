@@ -12,7 +12,9 @@ gem 'sqlite3'
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'rspec-mocks'
   gem 'shoulda-matchers'
+  gem 'pry'
 end
 
 # To use ActiveModel has_secure_password

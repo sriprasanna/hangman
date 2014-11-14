@@ -10,4 +10,10 @@ RSpec.describe Game, :type => :model do
   describe "Relations" do
     it { should belong_to(:word) }
   end
+  
+  describe 'Status' do
+    it 'should have three states as constants' do
+      expect(Game::STATUS).to eq(BUSY: 'busy', FAIL: 'fail', SUCCESS: 'success')
+    end
+  end
 end
