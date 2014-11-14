@@ -14,5 +14,11 @@ class GamesController < ApplicationController
     @game = Game.create! word: Word.random, status: Game::STATUS[:BUSY]
     render json: @game, status: :created, location: @game
   end
+  
+  def update
+    @game = Game.find(params[:id])
+    @game.play params[:char]
+    render json: @game
+  end
 
 end

@@ -58,5 +58,16 @@ RSpec.describe GamesController, :type => :controller do
       expect(response.headers['Location']).to eq("http://test.host/games/#{game_created.id}")
     end
   end
+  
+  describe "PUT update" do
+    it "should play the game with the passed character" do
+      char = 'a'
+      Game.stub(:find).with(game.to_param).and_return(game)
+      game.stub(:play).with(char).and_return(char)
+      put :update, {:id => game.to_param, :char => char}
+      expect(game).to have_received(:play).with(char)
+      expect(response.body).to eq(game.to_json)
+    end
+  end
 
 end
