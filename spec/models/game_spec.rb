@@ -17,7 +17,7 @@ RSpec.describe Game, :type => :model do
       expect(Game::STATUS).to eq(BUSY: 'busy', FAIL: 'fail', SUCCESS: 'success')
     end
   end
-  
+    
   describe 'Tries' do
     it 'should have default number of tries' do
       expect(Game.new.tries_left).to eq(11)
@@ -38,6 +38,13 @@ RSpec.describe Game, :type => :model do
         expect(game.current_word_status).to eq(Game::DOT * word.text.length)
       end
     end
+    
+    describe 'To JSON' do
+      it 'should generate hash with relevant data' do
+        expect(game.to_json).to eq({id: game.id, word: game.current_word_status, tries_left: game.tries_left, status: game.status}.to_json)
+      end
+    end
+    
     
     describe 'Play' do
       it 'should have the letters revealed when a correct guess is made' do

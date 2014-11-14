@@ -26,6 +26,7 @@ RSpec.describe GamesController, :type => :controller do
     it "assigns the requested game as @game" do
       get :show, {:id => game.to_param}
       expect(assigns(:game)).to eq(game)
+      expect(response.body).to eq(game.to_json)
     end
   end
   
@@ -42,10 +43,12 @@ RSpec.describe GamesController, :type => :controller do
 
     it "assigns a newly created game and randomly chosen word" do
       post :create
-      expect(assigns(:game)).to be_a(Game)
-      expect(assigns(:game)).to be_persisted
-      expect(assigns(:game).word).to eq(word)
-      expect(assigns(:game).status).to eq('busy')
+      game_created = assigns(:game)
+      expect(game_created).to be_a(Game)
+      expect(game_created).to be_persisted
+      expect(game_created.word).to eq(word)
+      expect(game_created.status).to eq('busy')
+      expect(response.body).to eq(game_created.to_json)
       expect(Word).to have_received(:random)
     end
 

@@ -17,6 +17,10 @@ class Game < ActiveRecord::Base
     decide!
   end
   
+  def to_json *args
+    {id: id, word: current_word_status, tries_left: tries_left, status: status}.to_json
+  end
+  
   private
   def generate_current_word_status
     self.current_word_status = DOT * word.text.length
