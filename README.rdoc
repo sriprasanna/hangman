@@ -1,1 +1,23 @@
 {<img src="https://travis-ci.org/sriprasanna/hangman.svg" alt="Build Status" />}[https://travis-ci.org/sriprasanna/hangman]
+
+====== Run the application (Make sure you have Ruby > 2.0.0)
+  git clone https://github.com/sriprasanna/hangman.git
+  cd hangman
+  bundle install
+  rails s
+
+====== To create a game
+  curl -X POST --data '' http://0.0.0.0:3000/games
+  {"id":2,"word":"........","tries_left":11,"status":"busy"}
+  
+====== To play a game
+  curl -X PUT --data "char=z" http://0.0.0.0:3000/games/:id
+  {"id":2,"word":"........","tries_left":10,"status":"busy"}
+  
+====== To see a particular game
+  curl http://0.0.0.0:3000/games/:id
+  {"id":2,"word":"........","tries_left":10,"status":"busy"}
+  
+====== To see all the games
+  curl http://0.0.0.0:3000/games
+  [{"id":2,"word":"........","tries_left":10,"status":"busy"}]
