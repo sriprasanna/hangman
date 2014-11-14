@@ -3,4 +3,10 @@ class Game < ActiveRecord::Base
   belongs_to :word
   validates_presence_of :word, :tries_left
   validates_inclusion_of :status, :in => Game::STATUS.values
+  before_save :generate_current_word_status
+  
+  private
+  def generate_current_word_status
+    self.current_word_status = '.' * word.text.length
+  end
 end
